@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      
+<title> Mind Map</title>
+<link rel="stylesheet" href="css/customstyles.css" type="text/css">
+<link rel="stylesheet" href="css/app.css" type="text/css">
+    
+<script type="text/javascript">
+
+//var words = ['Caring', 'Helping', 'People', 'Safety', 'Security', 'Shelter', 'Community', 'Volunteering'];
+//var sources = ['Habitat for Humanity', 'Habitat for Humanity', 'Habitat for Humanity', 'Habitat for Humanity', 'Habitat for Humanity', 'Habitat for //Humanity', 'Habitat for Humanity', 'Habitat for Humanity', 'Helping', 'Community', 'Caring', 'Safety', 'Security'];
+//var targets = ['Caring', 'Helping', 'People', 'Safety', 'Security', 'Shelter', 'Community', 'Volunteering', 'Community', 'Volunteering', 'People', //'Security', 'Shelter'];
+
+
+/*var majKW2 = 'Starbucks';
+var words2 = ['Coffee', 'Tea', 'Chai', 'Milk Tea', 'Mocha', 'Drink', 'Smoothy', 'Milk', 'Cappuccino'];
+var sources2 = ['Starbucks', 'Starbucks', 'Starbucks', 'Starbucks', 'Starbucks', 'Starbucks', 'Starbucks', 'Starbucks', 'Starbucks', 'Coffee', 'Smoothy', 'Drink', 'Milk Tea', 'Tea'];
+var targets2 = ['Coffee', 'Tea', 'Chai', 'Milk Tea', 'Mocha', 'Drink', 'Smoothy', 'Milk', 'Cappuccino', 'Milk', 'Drink', 'Mocha', 'Chai', 'Coffee'];*/
+
+
+var majKW1;
+var words;  
+var sources; 
+var targets;  
+var words1 =[];
+var sources1=[];
+var targets1=[];
+var lines1 =[];
+
+var nodes = [], lastNodeId, links = [], path = [], force = [],nodesWeight = [];
+
+function indexOfElem(elem) {
+	for (var i = 1; i < nodes.length; i++) {
+		if (nodes[i].lastNodeId === elem)
+			return i;
+	}
+}
+
+function createDataArray() {
+	
+var org = document.getElementById('ta1').value.trim();
+if(org.length<1)
+{
+alert("Organization must not be Empty !");
+window.location.reload();
+}
+else if ( /\s/.test(org)) {
+   alert("Organization must not contain space !");
+   window.location.reload();
+}else
+{
+majKW1=org;
+}
+
+	if(document.getElementById('ta2').value.trim().length < 1)
+	{
+	alert("Word must not be Empty !");
+	document.getElementById('ta2').value='';
+	}
+	else
+	{
+	var wordData = document.getElementById('ta2').value.trim().split(/\b/);
+	words1=[];
+	for (var i = 0; i < wordData.length; i++) {
+	if (/\S/.test(wordData[i])) {
+		words1.push(wordData[i]);
+		}
+	}
+	}
+  console.log("words Data: " + wordData);
+	console.log("words 1: " + words1);
+	if(document.getElementById('ta3').value.trim().length < 1)
+	{
+	alert("Source must not be Empty !");
+	document.getElementById('ta3').value='';
+	}
+	else
+	{
+	var sourceData = document.getElementById('ta3').value.trim().split(/\b/);
+	sources1=[];
+	for (var i = 0; i < sourceData.length; i++) {
+	 if (/\S/.test(sourceData[i])) {
+		sources1.push(sourceData[i]);
+		}
+	}
+	}
+  console.log("sources Data: " + sourceData);
+	console.log("sources 1: " + sources1);
+	var targetData = document.getElementById('ta4').value.trim().split(/\b/);
+	
+	for (var i = 0; i < targetData.length; i++) {
+	if (/\S/.test(sourceData[i])) {
+		targets1.push(targetData[i]);
+		}
+	}
+   console.log("targets Data: " + targetData);
+  console.log("targets 1: " + targets1);
+	  words = words1.toString();
+	  sources = sources1.toString();
+	  targets = targets1.toString();
+
+}
+
+function loadFromArray() {
+	createDataArray();
+		
+
+	console.log(" org : " +majKW1);
+	console.log("words : " + words);
+	console.log("sources : " + sources);
+	console.log("targets : " + targets);
+
+	
+	
+	document.getElementById('topPanel').removeChild(document.getElementById('loadBtn'));
+	document.getElementById('drawBtn').style.visibility = "visible";
+	document.getElementById('ta1').innerHTML = majKW1;
+	document.getElementById('ta2').value = words1.join('\n');
+	document.getElementById('ta3').value = sources1.join('\n');
+	document.getElementById('ta4').value = targets1.join('\n/');
+	lines1 = document.getElementById('ta2').value.trim().split(/\n/);
+	
+	document.getElementById('main').removeChild(document.getElementById('leftPanel'));
+	document.getElementById('textPanel').style.visibility = "visible";
+	document.getElementById('org').innerHTML = majKW1;
+	document.getElementById('word').value = words.split(',').join('\n');
+	document.getElementById('source').value = sources.split(',').join('\n');
+	document.getElementById('target').value = targets.split(',').join('\n');
+	
+	sources1.splice(0, words1.length);
+	targets1.splice(0, words1.length);
+	words1.splice(0, words1.length);
+	console.log("lines1 : " + lines1);
+	
+  let backup_lines=Array.from(lines1)
+  let tempArray = Array.from(new Set(lines1)) 
+  lines1=Array.from(tempArray)
+            
+         
+
+
+	for (var i = 0; i < backup_lines.length; i++) {
+	  // only push this line if it contains a non whitespace character.
+	  if (/\S/.test(backup_lines[i])) {
+		words1.push(backup_lines[i]);
+	  }
+	}
+    
+	
+	for (var i = 0; i < sources1.length; i++) {
+		if (words1.indexOf(sources1[i]) === -1) {
+			sources1.splice(i, 1);
+			targets1.splice(i, 1);
+		}
+	}
+	
+	for (var i = 0; i < targets1.length; i++) {			
+		if (words1.indexOf(targets1[i]) === -1) {
+			targets1.splice(i, 1);
+			sources1.splice(i, 1);
+		}
+	}
+  console.log("words 1: " + words1);
+  console.log("sources 1: " + sources1);
+  console.log("targets 1: " + targets1);
+
+	nodesWeight = new Array(words1.length +1).fill(0);
+  
+  nodes.push({"id": majKW1 +" : "+ nodesWeight[0], "reflexive": true, "colour": "#007FFF", "radius": 75});
+
+for (var i = 0; i < words1.length; i++) {
+  nodes.push({"id": words1[i], "reflexive": true, "colour": "#AAA", "radius": 50});
+}
+  console.log("nodes : "+nodes);
+  for (var i = 1; i <= words1.length; i++) {
+  
+  nodesWeight[0]++;
+  nodesWeight[i]++;
+}
+console.log("nodesWeight : "+nodesWeight);
+
+for (var j = words1.length + 1, k = j + 1; k < nodes.length; k++) {
+	nodesWeight[j]++;
+	nodesWeight[k]++;
+}
+console.log("nodesWeight : "+nodesWeight);
+if (sources1.length !== 0) {
+	for (var i = 0; i < sources1.length; i++) {
+			nodesWeight[indexOfElem(sources1[i])]++;
+			nodesWeight[indexOfElem(targets1[i])]++;
+	}
+}
+console.log("nodesWeight : "+nodesWeight);
+for(var i=0;i<sources1.length;i++)
+{
+var a = words1.indexOf(sources1[i]);
+sources1[i] = sources1[i] + " : "+ nodesWeight[a+1];
+console.log("nodesWeight : " + nodesWeight[a+1] + " : "+nodesWeight[a]);
+}
+
+for(var i=0;i<targets1.length;i++)
+{
+var a = words1.indexOf(targets1[i]);
+targets1[i] = targets1[i] +" : "+nodesWeight[a+1];
+console.log("nodesWeight : " + nodesWeight[a+1] + " : "+nodesWeight[a]);
+}
+
+for(var i=0;i<words1.length;i++)
+{
+words1[i] = words1[i] +" : "+nodesWeight[i+1];
+console.log("nodesWeight : " + nodesWeight[a+1] + " : "+nodesWeight[a]);
+}
+
+console.log("nodesWeight : "+nodesWeight);	
+console.log("words1 : " + words1);
+console.log("sources1 : " + sources1);
+console.log("targets1 : " + targets1);
+
+
+}
+
+function move() {
+		
+	document.getElementById('buttons').removeChild(document.getElementById('drawBtn'));
+	document.getElementById('topPanel').removeChild(document.getElementById('insWE'));
+
+	drawCMM();		
+}
+
+function drawCMM() {
+	document.getElementById('insCW').style.visibility = "visible";
+	
+// set up SVG for D3
+var width  = window.innerWidth,
+    height = window.innerHeight,
+   colors = d3.scale.category10();
+   
+var svg = d3.select('body')
+  .append('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+// set up initial nodes and links
+//  - nodes are known by 'id', not by index in array.
+//  - reflexive edges are indicated on the node (as a bold black circle).
+//  - links are always source < target; edge directions are set by 'left' and 'right'.
+
+nodes = [];
+
+nodes.push({"id": majKW1 +" : "+ nodesWeight[0], "reflexive": true, "colour": "#007FFF", "radius": 75});
+
+for (var i = 0; i < words1.length; i++) {
+	nodes.push({"id": words1[i], "reflexive": true, "colour": "#AAA", "radius": 50});
+}
+
+lastNodeId = nodes[nodes.length];
+
+for (var i = 1; i <= words1.length; i++) {
+	links.push({"source": nodes[0], "target": nodes[i], "left": false, "right": false, "colour": "#000", "length": 250});
+}
+
+for (var j = words1.length + 1, k = j + 1; k < nodes.length; k++) {
+	links.push({"source": nodes[j], "target": nodes[k], "left": false, "right": false, "colour": "#000", "length": 250});
+}
+
+if (sources1.length !== 0) {
+	for (var i = 0; i < sources1.length; i++) {
+			links.push({"source": nodes[indexOfElem(sources1[i])], "target": nodes[indexOfElem(targets1[i])], "left": false, "right": false, "colour": "#000", "length": 250});
+	}
+}
+
+console.log("nodesWeight : "+nodesWeight);
+
+var node_drag = d3.behavior.drag()
+        .on('dragstart', dragstart)
+        .on('drag', dragmove)
+        .on('dragend', dragend);
+
+    function dragstart() {
+        force.stop(); // stops the force auto positioning before you start dragging
+    }
+
+    function dragmove(d) {
+        d.px += d3.event.dx;
+        d.py += d3.event.dy;
+        d.x += d3.event.dx;
+        d.y += d3.event.dy; 
+    }
+
+    function dragend(d) {
+        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+    }
+	
+// init D3 force layout
+force = d3.layout.force()
+    .nodes(nodes)
+    .links(links)
+    .size([width, height])
+    .linkDistance(250)
+    .charge(-500)
+    .on('tick', tick)
+
+// define arrow markers for graph links
+svg.append('svg:defs').append('svg:marker')
+    .attr('id', 'end-arrow')
+    .attr('viewBox', '0 -5 10 10')
+    .attr('refX', 6)
+    .attr('markerWidth', 3)
+    .attr('markerHeight', 3)
+    .attr('orient', 'auto')
+  	.append('svg:path')
+    .attr('d', 'M0,-5L10,0L0,5')
+    .attr('fill', '#000');
+
+svg.append('svg:defs').append('svg:marker')
+    .attr('id', 'start-arrow')
+    .attr('viewBox', '0 -5 10 10')
+    .attr('refX', 4)
+    .attr('markerWidth', 3)
+    .attr('markerHeight', 3)
+    .attr('orient', 'auto')
+  	.append('svg:path')
+    .attr('d', 'M10,-5L0,0L10,5')
+    .attr('fill', '#000');
+
+// line displayed when dragging new nodes
+var drag_line = svg.append('svg:path')
+  .attr('class', 'link dragline hidden')
+  .attr('d', 'M0,0L0,0');
+
+// handles to link and node element groups
+path = svg.append('svg:g').selectAll('path'),
+    circle = svg.append('svg:g').selectAll('g');
+
+// mouse event vars
+var selected_node = null,
+    selected_link = null,
+    mousedown_link = null,
+    mousedown_node = null,
+    mouseup_node = null;
+
+function resetMouseVars() {
+  mousedown_node = null;
+  mouseup_node = null;
+  mousedown_link = null;
+}
+
+// update force layout (called automatically each iteration)
+function tick() {
+  // draw directed edges with proper padding from node centers
+  path.attr('d', function(d) {
+    var deltaX = d.target.x - d.source.x,
+        deltaY = d.target.y - d.source.y,
+        dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+        normX = deltaX / dist,
+        normY = deltaY / dist,
+        sourcePadding = d.left ? 17 : 12,
+        targetPadding = d.right ? 17 : 12,
+        sourceX = d.source.x + (sourcePadding * normX),
+        sourceY = d.source.y + (sourcePadding * normY),
+        targetX = d.target.x - (targetPadding * normX),
+        targetY = d.target.y - (targetPadding * normY);
+    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+  });
+
+  circle.attr('transform', function(d) {
+    return 'translate(' + d.x + ',' + d.y + ')';
+  });
+}
+
+// update graph (called when needed)
+function restart() {
+  // path (link) group
+  path = path.data(links);
+
+
+  // update existing links
+  path.classed('selected', function(d) { return d === selected_link; })
+    .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
+    .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; });
+
+
+  // add new links
+  path.enter().append('svg:path')
+    .attr('class', 'link')
+    .classed('selected', function(d) { return d === selected_link; })
+    .style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
+    .style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
+    .on('mousedown', function(d) {
+      if(d3.event.ctrlKey) return;
+
+      // select link
+      mousedown_link = d;
+      if(mousedown_link === selected_link) selected_link = null;
+      else selected_link = mousedown_link;
+      selected_node = null;
+      restart();
+    });
+
+  // remove old links
+  path.exit().remove();
+
+  // circle (node) group
+  // NB: the function arg is crucial here! nodes are known by id, not by index!
+  circle = circle.data(nodes, function(d) { return d.id; });
+
+  // update existing nodes (reflexive & selected visual states)
+  circle.selectAll('circle')
+    .style('fill', function(d) { return (d === selected_node) ? d3.rgb(d.colour).brighter().toString() : d.colour; })
+    .classed('reflexive', function(d) { return d.reflexive; });
+
+  // add new nodes
+  var g = circle.enter().append('svg:g');
+
+  g.append('svg:circle')
+    .attr('class', 'node')
+    .attr('r', function(d){return d.radius;})
+    .style('fill', function(d) { return (d === selected_node) ?   d3.rgb(d.colour).brighter().toString() : d.colour; })
+    .style('stroke', function(d) { return "#000" })
+    .classed('reflexive', function(d) { return d.reflexive; })
+	.call(node_drag)
+    .on('mouseover', function(d) {
+      if(!mousedown_node || d === mousedown_node) return;
+      // enlarge target node
+      d3.select(this).attr('transform', '');
+    })
+    .on('mouseout', function(d) {
+      if(!mousedown_node || d === mousedown_node) return;
+      // unenlarge target node
+      d3.select(this).attr('transform', '');
+    })
+    .on('mousedown', function(d) {
+      if(d3.event.ctrlKey) return;
+
+      // select node
+      mousedown_node = d;
+      if(mousedown_node === selected_node) selected_node = null;
+      else selected_node = mousedown_node;
+      selected_link = null;
+
+      // reposition drag line
+      drag_line
+        .style('marker-end', 'url(#end-arrow)')
+        .classed('hidden', false)
+        .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
+
+      restart();
+    })
+    .on('mouseup', function(d) {
+      if(!mousedown_node) return;
+
+      // needed by FF
+      drag_line
+        .classed('hidden', true)
+        .style('marker-end', '');
+
+      // check for drag-to-self
+      mouseup_node = d;
+      if(mouseup_node === mousedown_node) { resetMouseVars(); return; }
+	  
+	  // disallow links between two major keywords
+	  if(mouseup_node.id === majKW1 && mousedown_node.id === majKW2) { resetMouseVars(); return; }
+	  if(mouseup_node.id === majKW2 && mousedown_node.id === majKW1) { resetMouseVars(); return; }
+
+      // unenlarge target node
+      d3.select(this).attr('transform', '');
+
+      // add link to graph (update if exists)
+      // NB: links are strictly source < target; arrows separately specified by booleans
+      var source, target, direction;
+      if(mousedown_node.id < mouseup_node.id) {
+        source = mousedown_node;
+        target = mouseup_node;
+        direction = '';
+      } else {
+        source = mouseup_node;
+        target = mousedown_node;
+        direction = '';
+      }
+
+      var link;
+      link = links.filter(function(l) {
+        return (l.source === source && l.target === target);
+      })[0];
+
+      if(link) {
+        link[direction] = true;
+      } else {
+        link = {"source": source, "target": target, "left": false, "right": false, "colour": "#000", "length": 250};
+        link[direction] = true;
+        links.push(link);
+      }
+
+      // select new link
+      selected_link = link;
+      selected_node = null;
+      restart();
+    });
+
+  // show node IDs
+  g.append('svg:text')
+      .attr('x', 0)
+      .attr('dy', '.35em')
+	  .attr('text-anchor', 'middle')
+      .attr('class', 'id')
+      .text(function(d) { return d.id; });
+
+  // remove old nodes
+  circle.exit().remove();
+
+  // set the graph in motion
+  force.start();
+}
+
+function mousedown() {
+  svg.classed('active', true);
+  if(d3.event.ctrlKey || mousedown_node || mousedown_link) return;
+  restart();
+}
+
+function mousemove() {
+  if(!mousedown_node) return;
+
+  // update drag line
+  drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
+
+  restart();
+}
+
+function mouseup() {
+  if(mousedown_node) {
+    // hide drag line
+    drag_line
+      .classed('hidden', true)
+      .style('marker-end', '');
+  }
+
+  // because :active only works in WebKit?
+  svg.classed('active', false);
+
+  // clear mouse event vars
+  resetMouseVars();
+}
+
+function spliceLinksForNode(node) {
+  var toSplice = links.filter(function(l) {
+    return (l.source === node || l.target === node);
+  });
+  toSplice.map(function(l) {
+    links.splice(links.indexOf(l), 1);
+  });
+}
+
+// only respond once per keydown
+var lastKeyDown = -1;
+
+function keydown() {
+  d3.event.preventDefault();
+
+  if(lastKeyDown !== -1) return;
+  lastKeyDown = d3.event.keyCode;
+
+  // ctrl
+  if(d3.event.keyCode === 17) {
+    circle.call(force.drag);
+    svg.classed('ctrl', true);
+  }
+
+  if(!selected_node && !selected_link) return;
+  switch(d3.event.keyCode) {
+    case 8: // backspace
+    case 46: // delete
+      if(selected_node) {
+        nodes.splice(nodes.indexOf(selected_node), 1);
+        spliceLinksForNode(selected_node);
+      } else if(selected_link) {
+        links.splice(links.indexOf(selected_link), 1);
+      }
+      selected_link = null;
+      selected_node = null;
+      restart();
+      break;
+    case 66: // B
+      if(selected_link) {
+        // set link direction to both left and right
+        selected_link.left = true;
+        selected_link.right = true;
+      }
+      restart();
+      break;
+    case 76: // L
+      if(selected_link) {
+        // set link direction to left only
+        selected_link.left = true;
+        selected_link.right = false;
+      }
+      restart();
+      break;
+    case 82: // R
+      if(selected_node) {
+        // toggle node reflexivity
+        selected_node.reflexive = !selected_node.reflexive;
+      } else if(selected_link) {
+        // set link direction to right only
+        selected_link.left = false;
+        selected_link.right = true;
+      }
+      restart();
+      break;
+  }
+}
+
+function keyup() {
+  lastKeyDown = -1;
+
+  // ctrl
+  if(d3.event.keyCode === 17) {
+    circle
+      .on('mousedown.drag', null)
+      .on('touchstart.drag', null);
+    svg.classed('ctrl', false);
+  }
+}
+
+// app starts here
+svg.on('mousedown', mousedown)
+  .on('mousemove', mousemove)
+  .on('mouseup', mouseup);
+d3.select(window)
+  .on('keydown', keydown)
+  .on('keyup', keyup);
+restart();
+}
+
+// -->
+</script>
+    
+    <style type="text/css">
+    <!--
+     #insWE {
+		border: 2px solid #a1a1a1;
+		background: #dddddd;
+		width: 60%;
+		border-radius: 15px;
+		margin-left:30em;
+	 }	 
+	 #insCW {
+		border: 2px solid #a1a1a1;
+		background: #dddddd;
+		width: 60%;
+		border-radius: 15px;
+	 }
+    -->
+    </style>
+
+</head>
+
+<body>
+<h1 style="color:#800000><marquee>MIND-MAP</marquee></h1>
+	<script src="js/d3.v3.min.js"></script>
+	
+	<div id ="main" style="padding-top:1em">
+    
+    <div id="topPanel" align="center" style="height:180px;width:1800px;margin-left:-10em;" >            
+        <!--<button id="loadBtn" onClick="loadFromArray()"><h4 style="display:inline">Load Words</h4></button><br /><br />  -->         	
+        <div id="insWE" style="font-size:14px;height:180px;">
+            <p align="center" style="color:red; font-weight:bold;">Instructions</p>
+            <p align="center" style="margin-left:1em">To begin, click on the each text field and input the values as suggested, press "space" key after each word <b>to add words</b> to the list. <b>To delete words</b> highlight the word and press "Delete" key.</p>
+			<p align="center" style="margin-left:1em"><b>Note :</b></br>1. Organization must contain only single word.</br>2. Word input into the source and target must be from the list of words given in the words text field.</p>
+            <p align="center" style="margin-left:1em">When you are done entering the words, click on "Load Value" below.</p>
+        </div>
+		                 
+        <div id="insCW" style="visibility:hidden; font-size:14px;height:140px;margin-left:30em;margin-top:1em">
+            <p align="center" style="color:red; font-weight:bold;">Instructions</p>
+            <p align="left" style="margin-left:1em">To <b>connect concepts</b>, click on a word in a circle and drag it to another word. To <b>delete a concept</b>, click on the circle and press "Delete" key. To delete a connection, click on it till it turns dotted and press "Delete" key.</p>
+            <p align="left" style="margin-left:1em">If your <b>screen is crowded</b>, you can space things out by clicking and dragging the circles. To do that, click on the gray circle to turn it white. Press and hold the "Ctrl" key on PC (or "Command" key on Mac) and drag the circle.</p>
+        </div>
+		
+		<div id="buttons" style="visibility:visible;font-size:14px;height:35px;margin-left:0em;margin-top:1em">
+		<button class="btn" id="drawBtn" onClick="move()" style="margin-left:65em;margin-top:2em;visibility:hidden;height:35px;"><b>Draw Combined Mind Map</b></button>
+		
+		</div>
+		<button class="btn" id="loadBtn" onClick="loadFromArray()" style="margin-left:68em;margin-top:-20em;height:35px;"><b>Load values</b></button>
+    </div>
+    
+    <div id="leftPanel" style="margin-top:2em;height:140px">
+        <div id="th1" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:3.7em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:6em;">Organization</span>
+		<textarea id="ta1" rows="5" cols="35" style="margin-top:1em;"></textarea></div>
+        <div id="th2" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:5em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:8em;">Word</span>
+		<textarea id="ta2" rows="5" cols="35" style="margin-top:1em;"></textarea></div>
+		<div id="th3" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:5em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:8em;">Source</span>
+		<textarea id="ta3" rows="5" cols="35" style="margin-top:1em;"></textarea></div> 
+		<div id="th4" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:5em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:8em;">Target</span>
+		<textarea id="ta4" rows="5" cols="35" style="margin-top:1em;"></textarea></div>
+			
+    </div>
+	<div id="textPanel" style="margin-top:2em;visibility:hidden;height:140px">
+	<div id="th1" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:3.7em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:6em;">Organization</span>
+		<textarea id="org" rows="5" cols="35" style="margin-top:1em;"></textarea></div>
+        <div id="th2" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:5em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:8em;">Word</span>
+		<textarea id="word" rows="5" cols="35" style="margin-top:1em;"></textarea></div>
+		<div id="th3" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:5em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:8em;">Source</span>
+		<textarea id="source" rows="5" cols="35" style="margin-top:1em;"></textarea></div> 
+		<div id="th4" style="color:red; font-weight:bold; font-size:15px;float:left;margin-left:5em;margin-top:1em;width:250px">
+		<span style="color:blue;margin-left:8em;">Target</span>
+		<textarea id="target" rows="5" cols="35" style="margin-top:1em;"></textarea></div> 	
+	</div>
+	
+	</div>
+  <script src="js/d3.v3.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+/**
+ * All your custom CSS should go into this file
+ */
+
+/*
+@media print {
+	body * {
+		visibility:hidden;
+	}
+	containerTable{
+		display: none;
+	}
+	#hiddenStage, #hiddenStage * {
+		visibility: visible;
+		display: inline;
+		position: absolute;
+		top:0;
+		left:0;
+	}
+}*/
+
+body {
+	font-color: #101010;
+	/*border-top: 6px solid #7f3332;*/
+}
+textarea,
+textarea:hover, 
+textarea:active, 
+textarea:focus{
+	outline:0px !important;
+	-webkit-appearance:none;
+	box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	-moz-tab-size:3; 
+	-o-tab-size:3;
+	-webkit-tab-size:3;
+	tab-size: 3;
+	border-radius: 0px;
+}
+h1, h2, h3, h4, h5, h6 {
+	margin: 10px 0;
+	font-family: inherit;
+	font-weight: bold;
+	line-height: 1;
+	color: inherit;
+	font-family: 'Average Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+	font-weight: normal;
+	line-height: 20px;
+	color: #555555;
+	text-rendering: optimizelegibility;
+}
+h1, h2, h3 { line-height: 40px }
+h1 { font-size: 38.5px }
+h2 { font-size: 31.5px }
+h3 { font-size: 24.5px }
+h4 { font-size: 18.5px }
+h5 { font-size: 14px }
+h6 { font-size: 11.9px }
+h1 small { font-size: 24.5px }
+h2 small { font-size: 17.5px }
+a.muted:hover { color: #808080 }
+a.text-warning:hover { color: #a47e3c }
+a.text-error:hover { color: #953b39 }
+a.text-info:hover { color: #2d6987 }
+a.text-success:hover { color: #356635 }
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+	margin-bottom: 10px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	vertical-align: middle;
+}
+input, textarea, .uneditable-input { width: 206px } textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border linear .2s, box-shadow linear .2s;
+	-moz-transition: border linear .2s, box-shadow linear .2s;
+	-o-transition: border linear .2s, box-shadow linear .2s;
+	transition: border linear .2s, box-shadow linear .2s;
+}
+input[type="radio"], input[type="checkbox"] {
+	margin: 4px 0 0;
+	*margin-top: 0;
+	margin-top: 1px \9;
+	line-height: normal;
+}
+a{
+	color:#763A37;
+}
+.ui-wrapper{
+	background-color:white;
+}
+#logo{
+	position: absolute;
+	top: 3px;
+	left: 5px;
+	width: 297px;
+	height: 24px;
+	text-align: center;
+	background-color: #ffffff;
+	border: 1px solid #CA532E;
+	border-top: 0px;
+	border-radius: 0px 0px 4px 4px;
+	z-index: 99;
+}
+.tools{
+	position: absolute;
+	top: 3px;
+	right: 4px;
+	height: 24px;
+	background-color: #fff;
+	border: 1px solid #ca532e;
+	border-top: 0px;
+	border-radius: 0px 0px 4px 4px;
+	z-index: 99;
+	padding: 0 7px 0 7px;
+}
+#loginBtn{
+	position: absolute;
+	top: 4px;
+	right:5px;
+	z-index: 99;
+}
+.orangeborder {
+	border-top: 6px solid #CA532E;
+	padding: 0px;
+	margin: 0px;
+}
+#stageHolder:hover{
+	cursor:move;
+}
+#svgHolder:hover{
+	cursor:move;
+}
+#containerTable{
+	background-color: #fff;
+}
+#containerTable td{
+	vertical-align: top;
+	font-family: 'Helvetica Neue', 'Helvetica';
+	font-size: 12px;
+	text-align: center;
+}
+#leftPane {
+	padding: 25px 0px 0px 0px;
+	min-width: 200px;
+}
+#textHolder{
+	border-top:1px solid #999;
+	border-right:1px solid #999;
+	border-left:1px solid #999;
+	background-color:#f3f3f3; /*#eee;*/
+	padding: 0px;
+	margin: 5px 0px 0px 0px;
+}
+a.indent { 
+	background-image:url("assets/img/indent.gif"); 
+}
+a.indent:hover { 
+	background-image:url("assets/img/indent_light.gif"); 
+}
+.h{
+	padding: 5px 0px 0px 0px;
+}
+.popover{
+	width:250px;
+}
+.popover-title{
+	display:none;
+	height:0px;
+}
+#tab2{
+	border-right: 1px solid #aaa;
+	padding-top: 5px;
+}
+#textArea{
+	margin: 0px;
+	padding: 3px 2px 0px 4px;
+	border: 0px solid white;
+	width: 289px;
+	line-height: 140%;
+	font-size: 14px;
+	font-family: Helvetica, "Helvetica Neue", Arial, Verdana;
+	color: #101010;
+	overflow: auto;
+	white-space: pre;
+}
+#drawingArea{
+	cursor: move;
+}
+#drawBtn{
+	margin-top: 8px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;/*250px;*/
+}
+#trash:hover{
+	cursor:pointer;
+}
+.min{
+	width: 40px;
+	display:inline-block;
+	text-align: right;
+	padding-right:5px;
+}
+.w80{
+	font-size: 18px;
+	width:70px;
+	display:inline-block;
+}
+.w200{
+	width:200px;
+	display: inline-block;
+}
+.min3{
+	display:inline-block;
+}
+.sideSelector a{
+	width: 132px;
+}
+checkbox, label{
+	display: inline-block;
+	font-family: 'Helvetica Neue', 'Helvetica';
+	font-size: 12px;
+	font-color: #101010;	
+}
+.w50{
+	width: 55px;
+	display: inline-block;
+	padding-bottom: 12px;
+}
+.s50{
+	width: 55px;
+	display: inline-block;
+	padding-bottom: 4px;
+}
+.inlineblock{
+	display: block;
+	white-space: nowrap;
+	border:1px solid gray;
+}
+.btn, .btn-group{
+	display: inline-block; 
+}
+#tab2 td{
+	padding-top: 5px;
+}
+#tab2 .tcontent{
+	padding-bottom: 12px;
+	padding-top: 10px;
+}
+#tab2 tr{
+	border-bottom: 1px solid #ccc;
+}
+#tab2 table{
+	width: 290px;
+}
+#colorsdiv{
+	max-height: 200px;
+	overflow: visible;
+}
+#actionsTable{
+	width: 100%;
+}
+.toggle{
+	margin:0px;
+	padding:0px;
+	width: 50%;
+	border-bottom: 1px solid #aaa;
+	text-align: center;
+	display: inline-block;
+	cursor: pointer;
+}
+.toggleActive{
+
+	padding-top: 1px; /* Add padding to active - otherwise there's a glitch in the border line on Safari 6.0.1 */
+
+   /* Gradient */
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 11%, #eaeaea 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(11%,#ffffff), color-stop(100%,#eaeaea)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 11%,#eaeaea 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 11%,#eaeaea 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 11%,#eaeaea 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #ffffff 11%,#eaeaea 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eaeaea',GradientType=0 ); /* IE6-9 */
+}
+.toggleInactive{
+	background-color: #e0e0e0;
+	border-top: 1px solid #aaa;
+}
+.toggleLeft{
+	border-left: 1px solid #aaa;
+	/*border-top: 1px solid #fff;*/
+	margin-right: -1px;
+	margin-left: 0px;
+	-webkit-border-bottom-left-radius: 5px;
+   -moz-border-radius-bottomleft: 5px;
+   border-bottom-left-radius: 5px;
+}
+.toggleRight{
+	border-right: 1px solid #aaa;
+	border-left: 1px solid #aaa;
+	margin-left: -2px;
+	margin-right: -1px;
+	-webkit-border-bottom-right-radius: 5px;
+   -moz-border-radius-bottomright: 5px;
+   border-bottom-right-radius: 5px;
+}
+/*.modal.fade{
+    -webkit-transition: opacity .01s linear, none;
+    -moz-transition: opacity .01s linear, none;
+    -ms-transition: opacity .01s linear, none;
+    -o-transition: opacity .01s linear, none;
+    transition: opacity .01s linear, none;
+}*/
+#introModal{
+	background-color:#fafafa;
+}
+.dl-horizontal.soft dt{
+  font-weight: normal;
+  text-align: left;
+}
+.dl-horizontal.soft dd{
+  font-weight: normal;
+  text-align: left;
+}
+.shadowed{
+	-moz-box-shadow:    3px 3px 5px 2px #ccc;
+	-webkit-box-shadow: 3px 3px 5px 2px #ccc;
+	box-shadow:         3px 3px 5px 2px #ccc;
+}
+.lead{
+	font-size: 1.1em;
+	line-height: 180%;
+	font-family: Helvetica, sans-serif;
+	font-weight: 200;
+}
+/*.nav-tabs li a{
+	padding:2px 10px 1px 10px;
+	height: 20px;
+}
+.nav-tabs li{
+	background-color: #fdedb3;
+}
+*/
+#accountTabs .nav-tabs li{
+	width: 200px;
+	font-size: 1.1em;
+	line-height: 180%;
+	font-family: Helvetica, sans-serif;
+	font-weight: 200;
+}
+#accountTabs .nav-tabs a{
+	background: #f5f5f5;
+}
+.gray{
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	color: #666666;
+}
+
+.node circle {
+  cursor: pointer;
+  fill: #000000;/*#CA532E;*/
+}
+.node text {
+  font-size: 14px;
+}
+path.link {
+  fill: none;
+  stroke: #736F6E;/*#CA532E;*/
+  stroke-width: 15px;
+}
